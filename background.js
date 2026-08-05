@@ -1,5 +1,7 @@
 'use strict';
-importScripts('matcher.js', 'scraper.js');
+// Firefox event-page background: matcher.js + scraper.js load first via the
+// manifest (they attach APLMatcher/APLScraper to globalThis). importScripts
+// does not exist in Firefox background pages (service-worker-only API).
 
 const UA = APLScraper.UA;
 const DAY = 24 * 60 * 60 * 1000;

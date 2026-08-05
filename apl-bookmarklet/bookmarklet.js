@@ -105,6 +105,7 @@ javascript: (() => {
   }
   function isValidData(d) { return d && typeof d.prices === 'object' && typeof d.generatedAt === 'string'; }
 
+  let firstApply = true;
   function applyPrices(data) {
     const byKey = data.prices || data;
     let modified = 0, total = 0;
@@ -119,10 +120,15 @@ javascript: (() => {
       } catch {}
     }
     if (modified > 0) kickJplistRefresh();
-    const stand = data.generatedAt ? ' (Stand ' + new Date(data.generatedAt).toLocaleDateString('de-DE') + ')' : '';
-    toast(total === 0
-      ? 'APL: keine passenden Fahrzeuge (Filter oder Modelle ohne APL-Liste)' + stand
-      : 'APL: ' + modified + ' Preise aktualisiert von ' + total + stand);
+    // Toast nur beim ersten Lauf oder wenn sich etwas geändert hat -
+    // sonst würde der Re-Apply den ersten Toast mit "0 aktualisiert" überschreiben.
+    if (modified > 0 || firstApply) {
+      const stand = data.generatedAt ? ' (Stand ' + new Date(data.generatedAt).toLocaleDateString('de-DE') + ')' : '';
+      toast(total === 0
+        ? 'APL: keine passenden Fahrzeuge (Filter oder Modelle ohne APL-Liste)' + stand
+        : 'APL: ' + modified + ' Preise aktualisiert von ' + total + stand);
+    }
+    firstApply = false;
   }
 
   async function run() {

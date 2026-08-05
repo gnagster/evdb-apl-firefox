@@ -6,7 +6,8 @@ javascript: (() => {
     'https://raw.githubusercontent.com/gnagster/evdb-apl-firefox/main/apl-prices.json',
     'https://cdn.jsdelivr.net/gh/gnagster/evdb-apl-firefox@main/apl-prices.json',
   ];
-  const CACHE_KEY = 'apl-pk-prices';
+  // v2: alte Caches (evtl. kaputt/veraltet) werden ignoriert und neu geladen.
+  const CACHE_KEY = 'apl-pk-prices-v2';
   const DAY = 24 * 60 * 60 * 1000;
 
   // --- helpers (identisch mit content.js) ---
@@ -88,19 +89,21 @@ javascript: (() => {
   async function loadPrices() {
     let cached = null;
     try { cached = JSON.parse(localStorage.getItem(CACHE_KEY)); } catch {}
-    if (cached && Date.now() - cached.ts < DAY) return cached.data;
+    if (cached && Date.now() - cached.ts < DAY && isValidData(cached.data)) return cached.data;
     let lastErr;
     for (const url of JSON_URLS) {
       try {
         const res = await fetch(url);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
+        if (!isValidData(data)) throw new Error('unerwartetes JSON-Format');
         localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
         return data;
       } catch (e) { lastErr = e; }
     }
     throw lastErr || new Error('fetch failed');
   }
+  function isValidData(d) { return d && typeof d.prices === 'object' && typeof d.generatedAt === 'string'; }
 
   function applyPrices(data) {
     const byKey = data.prices || data;
@@ -117,11 +120,18 @@ javascript: (() => {
     }
     if (modified > 0) kickJplistRefresh();
     const stand = data.generatedAt ? ' (Stand ' + new Date(data.generatedAt).toLocaleDateString('de-DE') + ')' : '';
-    toast('APL: ' + modified + ' Preise aktualisiert von ' + total + stand);
+    toast(total === 0
+      ? 'APL: keine passenden Fahrzeuge (Filter oder Modelle ohne APL-Liste)' + stand
+      : 'APL: ' + modified + ' Preise aktualisiert von ' + total + stand);
   }
 
   async function run() {
-    if (!document.querySelector('.list-item')) { toast('Keine Fahrzeugliste gefunden'); return; }
+    // Liste kann beim Klick noch laden (Redirect/Hash-Routing) -> bis zu 6s warten.
+    const t0 = Date.now();
+    while (!document.querySelector('.list-item')) {
+      if (Date.now() - t0 > 6000) { toast('APL: keine Fahrzeugliste gefunden'); return; }
+      await new Promise(r => setTimeout(r, 300));
+    }
     try {
       const data = await loadPrices();
       applyPrices(data);

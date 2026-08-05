@@ -6,12 +6,21 @@ installieren.
 
 ## Installation
 
-1. Lesezeichen anlegen (z. B. Strg+D) und danach im Lesezeichen-Manager den
-   Speicherort/URL bearbeiten.
-2. Den gesamten Inhalt von `bookmarklet.js` (inkl. `javascript:`-Präfix) in das
-   URL-Feld einfügen und speichern.
+1. `bookmarklet.min.js` öffnen (eine einzige Zeile) und die komplette Zeile
+   kopieren: https://raw.githubusercontent.com/gnagster/evdb-apl-firefox/main/apl-bookmarklet/bookmarklet.min.js
+2. Lesezeichen anlegen (Strg+D) und im Lesezeichen-Manager die URL durch den
+   kopierten Inhalt ersetzen. Die URL muss mit `javascript:` beginnen.
 3. Auf `https://ev-database.org` das Lesezeichen anklicken — nach ~1 s erscheint
-   ein Toast mit der Anzahl aktualisierter Preise.
+   ein Toast („APL: N Preise aktualisiert von M").
+
+Tipps bei „es passiert nichts":
+
+- Nach dem Klick F12 → Konsole öffnen: erscheint eine rote Fehlermeldung? Falls
+  ja, bitte melden (z. B. „SyntaxError" heißt: die URL wurde abgeschnitten).
+- Das Lesezeichen **lokal in Edge anlegen** — Edge-Sync übernimmt
+  `javascript:`-Lesezeichen aus anderen Browsern NICHT (URL wird geleert).
+- Klick kurz abwarten (bis zu 6 s): Wird beim Klick noch zur Liste
+  umgeleitet, wartet das Bookmarklet automatisch.
 
 ## Datenquelle
 

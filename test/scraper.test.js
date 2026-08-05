@@ -62,4 +62,24 @@ const multi =
 const m = APLScraper.parsePrices(multi);
 assert.strictEqual(m.geschaeftskunden.endpreis, '28.106,95', 'first (base) motor wins');
 
-console.log('PASS: scraper classification ok (abarth + kia multi-tarif + multi-motor)');
+// VW-style factory-pickup deal: unrestricted "Abholung im Werk" is PK
+// (regression for the 2026-08-05 fix - VW/Audi/BMW deliver factory pickup).
+const vw =
+  '<div class="preis-item" data-motor="1034" data-tarif="49">' +
+  '<div class="data-TarifInfos"><p>Bei diesem Angebot profitieren Sie davon, dass das Fahrzeug vorab zugelassen wird</p></div>' +
+  '<div class="data-endpreis">31.411,88</div>' +
+  '</div>' +
+  '<div class="preis-item" data-motor="1034" data-tarif="52">' +
+  '<div class="data-TarifInfos"><p>Preis nur für Selbständige/Gewerbetreibende</p></div>' +
+  '<div class="data-endpreis">35.205,30</div><div class="data-AbholortText">Abholung im Werk in Wolfsburg</div>' +
+  '</div>' +
+  '<div class="preis-item" data-motor="1034" data-tarif="51">' +
+  '<div class="data-TarifInfos"><p>Die "VW ID.Kaufprämie" haben wir in unseren Konditionen bereits berücksichtigt.</p></div>' +
+  '<div class="data-endpreis">35.205,30</div><div class="data-AbholortText">Abholung im Werk in Wolfsburg</div>' +
+  '</div>';
+const v = APLScraper.parsePrices(vw);
+assert.strictEqual(v.privatkunden.endpreis, '35.205,30', 'VW PK = unrestricted Abholung im Werk (tarif 51)');
+assert.strictEqual(v.geschaeftskunden.endpreis, '35.205,30', 'VW GK = Gewerbetreibende (tarif 52)');
+assert.deepStrictEqual(Object.keys(v).sort(), ['geschaeftskunden', 'privatkunden'], 'VW: Tageszulassung skipped');
+
+console.log('PASS: scraper classification ok (abarth + kia + vw + multi-motor)');

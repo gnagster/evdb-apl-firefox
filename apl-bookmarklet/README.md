@@ -18,8 +18,9 @@ installieren.
 Die Preise stammen aus `apl-prices.json` im Repo-Wurzelverzeichnis, das ein
 täglicher GitHub-Action-Lauf (`apl-prices`, 05:10 UTC, auch manuell unter
 Actions → apl-prices → Run workflow auslösbar) über `tools/scrape-prices.mjs`
-erzeugt. Das Bookmarklet lädt die Datei von jsdelivr (CORS-fähig, Fallback: raw
-GitHub) und cached sie 24 h im `localStorage`.
+erzeugt. Das Bookmarklet lädt die Datei von raw GitHub (frisch, CORS-fähig;
+jsdelivr cached `@main` 24 h und dient nur als Fallback) und cached sie 24 h im
+`localStorage`.
 
 ## Bekannte Grenzen
 

@@ -1,9 +1,10 @@
 javascript: (() => {
   // APL Preise Bookmarklet: ersetzt EV-Database DE-Listenpreise durch APL.de
   // Privatkunden-Preise. Datenquelle: täglicher GitHub-Action-Lauf -> apl-prices.json.
+  // raw zuerst: jsdelivr cached @main 24h und liefert sonst veraltete Preise.
   const JSON_URLS = [
-    'https://cdn.jsdelivr.net/gh/gnagster/evdb-apl-firefox@main/apl-prices.json',
     'https://raw.githubusercontent.com/gnagster/evdb-apl-firefox/main/apl-prices.json',
+    'https://cdn.jsdelivr.net/gh/gnagster/evdb-apl-firefox@main/apl-prices.json',
   ];
   const CACHE_KEY = 'apl-pk-prices';
   const DAY = 24 * 60 * 60 * 1000;

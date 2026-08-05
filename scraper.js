@@ -6,15 +6,16 @@
 // variant (Abarth: 159/69/71, Kia EV3: 117/174/119/118/194/212/120, VW ID.3:
 // 48/51/52). The stable signal is the block's German label text:
 //   - Geschäftskunden: mentions Gewerbetreibende / Selbständige
-//   - Privatkunden: plain "Abholung beim {Make}-Vertragshändler" deal without
-//     a "Preis nur für ..." / Tageszulassung / Abrufschein restriction
+//   - Privatkunden: plain "Abholung beim {Make}-Vertragshändler" or
+//     "Abholung im Werk" deal without a "Preis nur für ..." / Tageszulassung /
+//     Abrufschein restriction (VW/Audi/etc. deliver factory-pickup deals)
 'use strict';
 
 (function (global) {
   const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36';
 
   const GK_RE = /Gewerbetreibende|Selbständige|Selbstständige/i;
-  const PK_RE = /Abholung beim/i;
+  const PK_RE = /Abholung beim|Abholung im Werk/i;
   const PK_BAD_RE = /Preis nur für|vorab zugelassen|Abrufschein|Corporate Benefits|Beamte/i;
 
   function classify(blockText) {

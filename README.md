@@ -4,6 +4,13 @@ Firefox WebExtension (MV3) that replaces EV-Database (ev-database.org / .de) DE
 starting prices with current APL.de prices for orderable ("Bestellbar") EVs,
 recalculates Price/Range and refreshes jplist sorting.
 
+## Bookmarklet (ohne Extension)
+
+Nur Lesezeichen, keine Extension: `apl-bookmarklet/bookmarklet.js` ersetzt die
+DE-Preise auf ev-database.org durch APL-Privatkunden-Preise aus
+`apl-prices.json` (täglich 05:10 UTC per GitHub Action `apl-prices`, erzeugt von
+`tools/scrape-prices.mjs`). Installation + Grenzen: `apl-bookmarklet/README.md`.
+
 ## Install (dev)
 
 1. Open `about:debugging#/runtime/this-firefox`.
@@ -29,7 +36,8 @@ recalculates Price/Range and refreshes jplist sorting.
     stale entries. Concurrency 4, 200 ms delay, 429 → retry once.
 - `scraper.js`: pure APL scrape core — `fetchPrices(varianteId, mode)` POSTs the
   price API and `parsePrices()` picks the Geschäftskunden block (`Gewerbetreibende|Selbständige`)
-  or Privatkunden block (plain "Abholung beim" deal, excluding
+  or Privatkunden block (plain "Abholung beim" Vertragshändler- bzw.
+  "Abholung im Werk"-Angebot, excluding
   `Preis nur für|vorab zugelassen|Abrufschein|Corporate Benefits|Beamte|GdB`).
 - `content.js`: replaces `.price_buy.current .country_de` with the cached APL
   price, updates the hidden `.pricesort`/`.pricefilter`/`.priceperrange` numerics
